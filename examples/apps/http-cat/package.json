@@ -1,0 +1,16 @@
+{
+	"name": "httpcat",
+	"version": "1.0.0",
+	"description": "Alexa http-cat skill",
+	"main": "index.js",
+	"scripts": {
+		"start": "node examples/apps/http-cat/index.js"
+	},
+	"author": "josh skeen",
+	"license": "ISC",
+	"dependencies": {
+		"alexa-app": "^4.0.0",
+		"lodash": "^4.3.0",
+		"request-promise": "^2.0.0"
+	}
+}

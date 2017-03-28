@@ -2,14 +2,68 @@
 module.change_code = 1;
 var _ = require('lodash');
 var Alexa = require('alexa-app');
-var app = new Alexa.app('airportinfo');
-var FAADataHelper = require('./faa_data_helper');
+var app = new Alexa.app('http-cat');
+
+var CODES = {}
+
+var fs = require("fs")
+
+var lines = fs.readFileSync(__dirname + '/codes.txt', { encoding: 'utf8', flag: 'r' });
+
+for (let line of lines.split('\n')) {
+  var elements = line.split(/\s+/, 2);
+  
+  CODES[elements[0].trim()] = elements[1].trim();
+}
 
 app.launch(function(req, res) {
-  var prompt = 'For delay information, tell me an Airport code.';
+  var prompt = 'For HTTP Cat Information, please tell me its status Code.';
   res.say(prompt).reprompt(prompt).shouldEndSession(false);
 });
 
+app.intent('HttpCatCodeIntent', 
+  {
+    slots: {
+      'CODE': 'AMAZON.NUMBER'
+    },
+    'utterances': [
+      'whats\'s {CODE}',
+      '{CODE}',
+    ]
+  },
+  function(request, response) {
+    try {
+      //console.log('request: ', request);
+
+      var code = request.slot('CODE');
+
+      var meaning = CODES[code];
+      
+      console.log("CODE: ", code, " meaning: ", meaning);
+
+      if (null == meaning) {
+        return response.say("Unknown code " + code);
+      } else {
+        return response.card({
+          type: "standard",
+          title: "Code " + code + " (" + meaning + ")",
+          text: meaning,
+          //image: {
+          //  largeImageUrl: "https://http.cat/" + code + ".jpg"
+          //}
+        });
+      }
+    } catch (e) {
+      console.log('error:', e);
+    }
+  }
+);
+
+console.log("API Mount Point: https://" + process.env.PROJECT_NAME + ".glitch.me/http-cat"); 
+
+module.exports = app;
+
+/*
 app.intent('airportinfo', {
   'slots': {
     'AIRPORTCODE': 'FAACODES'
@@ -43,3 +97,4 @@ app.intent('airportinfo', {
 //hack to support custom utterances in utterance expansion string
 console.log(app.utterances().replace(/\{\-\|/g, '{'));
 module.exports = app;
+*/

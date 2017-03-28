@@ -8,7 +8,7 @@
   },
   "author": "Matt Kruse",
   "dependencies": {
-    "alexa-app": "^2.1.0",
+    "alexa-app": "^4.0.0",
     "bluebird": "^2.9.34",
     "body-parser": "~1.0.1",
     "ejs": "~0.7.1",
